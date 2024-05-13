@@ -32,10 +32,12 @@
     </table>
     <div>
 
-            <Link v-if="task.start === null">Начать</Link>
-            <Link v-if="task.status_id === 1">Закончить</Link>
-            <Link>Удалить</Link>
-            <Link :href="route('task.edit', task.id)">Редактировать</Link>
+        <Link @click="updateTask(task.id, 1, task.project_id)" v-if="task.start === null" class="bg-green-300">Начать</Link>
+        <Link @click="updateTask(task.id, 0, task.project_id)" v-if="task.status_id === 1" class="bg-sky-200">Закончить</Link>
+        <Link :href="route('task.edit', task.id)" class="bg-gray-300">Редактировать</Link>
+        <Link @click="updateTask(task.id, 3, task.project_id)" class="bg-red-200 w-32 p-1 text-center rounded">Удалить</Link>
+
+
     </div>
 </div>
 
@@ -54,6 +56,14 @@ export default {
     components: {
         Link,
     },
+
+    methods :{
+         updateTask(taskID , par, project_id)
+        {
+            console.log(taskID , par, project_id);
+               this.$inertia.patch('/task/'+taskID, {par, project_id});
+        },
+      },
 }
 </script>
 

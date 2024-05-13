@@ -19,9 +19,12 @@ class TaskController extends Controller
             ->where('status','<>', 2)
             ->get();
         //если задач нет , тогда ставим готово, иначе - 1 (на исполнении)
-        if (count($tasks) === 0 ) {
+        if (count($tasks) === 0 )
+
+        {
             Project::find($project_id)->update(['status' => 2]);
-        } else { Project::find($project_id)->update(['status' => 1]);}
+        }
+        else { Project::find($project_id)->update(['status' => 1]);}
     }
 
     public function index()

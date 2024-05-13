@@ -40,8 +40,6 @@
     <div>
         <button @click="openModal" class="bg-green-300">Создать задачу</button>
     </div>
-
-    <!-- Добавляем кнопку для открытия модального окна -->
     <!-- Модальное окно -->
     <transition name="modal">
         <div class="modal" v-if="showModal">
@@ -106,15 +104,6 @@ export default {
         updateTask(taskID , par, project_id)
         {
             this.$inertia.patch('/task/'+taskID, {par, project_id});
-        },
-        openTask(taskId) {
-            this.$inertia.get('/task/' + taskId, {
-                preserveState: true, // Сохраняет текущее состояние приложения
-                replace: true // Заменяет текущий маршрут на новый
-            }).then(response => {
-                this.taskData = response.data.task; // Сохраняем данные задачи в свойство data
-                this.showModal = true; // Показываем модальное окно
-            });
         },
 
     },

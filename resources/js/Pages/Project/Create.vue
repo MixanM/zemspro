@@ -4,9 +4,11 @@
     <form @submit.prevent="store">
         <div>
             <input required v-model="title" class="w-full rounded" type="text" placeholder="Название нового проекта">
+            <div v-if="errors.title" class="text-red-600">{{errors.title}}</div>
         </div>
         <div>
             <textarea required v-model="overview" class="w-full rounded" id="" cols="30" rows="10" placeholder="Описание проекта"></textarea>
+            <div v-if="errors.overview" class="text-red-600">{{errors.overview}}</div>
         </div>
         <div class="flex justify-between">
             <button type="submit" class="block p-2 w-32 text-center text-nowrap bg-green-300 rounded">Сохранить</button>
@@ -27,6 +29,10 @@ export default {
     components: {
         Link,
     },
+
+    props:[
+        `errors`,
+    ],
 
     data(){
         return {

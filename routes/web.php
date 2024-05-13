@@ -18,15 +18,11 @@ use Inertia\Inertia;
 
 Route::middleware('auth')->group(function () {
 
-    Route::middleware('status_control')->group(function() {
-        Route::resource('/', ProjectController::class);
-        Route::patch('project/{project}', [ProjectController::class, 'update'])->name('project.edit');
-        Route::resource('/project', ProjectController::class);
-
-        Route::patch('task/{task}', [TaskController::class, 'update'])->name('task.edit');
-        Route::resource('/task', TaskController::class);
-    });
-
+    Route::resource('/', ProjectController::class);
+    Route::patch('project/{project}', [ProjectController::class, 'update'])->name('project.edit');
+    Route::resource('/project', ProjectController::class);
+    Route::patch('task/{task}', [TaskController::class, 'update'])->name('task.edit');
+    Route::resource('/task', TaskController::class);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

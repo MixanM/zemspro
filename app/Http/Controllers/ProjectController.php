@@ -64,6 +64,7 @@ class ProjectController extends Controller
         // Проверка на наличие ошибок валидации
         $validatedData = $request->validate([
             'title' => 'required|string',
+            'overview' => 'required|string',
         ]);
 
         // Получаем id текущего пользователя
