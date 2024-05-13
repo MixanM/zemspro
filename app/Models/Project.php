@@ -9,5 +9,5 @@ class Project extends Model
 {
     protected $guarded = false;
     use HasFactory;
-
+    protected $dates = ['total_time'];
 }

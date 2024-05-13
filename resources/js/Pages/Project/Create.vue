@@ -6,7 +6,7 @@
             <input required v-model="title" class="w-full rounded" type="text" placeholder="Название нового проекта">
         </div>
         <div>
-            <textarea v-model="overview" class="w-full rounded" id="" cols="30" rows="10" placeholder="Описание проекта"></textarea>
+            <textarea required v-model="overview" class="w-full rounded" id="" cols="30" rows="10" placeholder="Описание проекта"></textarea>
         </div>
         <div class="flex justify-between">
             <button type="submit" class="block p-2 w-32 text-center text-nowrap bg-green-300 rounded">Сохранить</button>

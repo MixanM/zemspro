@@ -17,11 +17,17 @@ use Inertia\Inertia;
 //})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::resource('/', ProjectController::class);
-    Route::patch('project/{project}', [ProjectController::class, 'update'])->name('project.edit');
-    Route::resource('/project', ProjectController::class);
-    Route::patch('task/{task}', [TaskController::class, 'update'])->name('task.edit');
-    Route::resource('/task', TaskController::class);
+
+    Route::middleware('status_control')->group(function() {
+        Route::resource('/', ProjectController::class);
+        Route::patch('project/{project}', [ProjectController::class, 'update'])->name('project.edit');
+        Route::resource('/project', ProjectController::class);
+
+        Route::patch('task/{task}', [TaskController::class, 'update'])->name('task.edit');
+        Route::resource('/task', TaskController::class);
+    });
+
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

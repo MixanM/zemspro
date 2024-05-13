@@ -5,11 +5,25 @@ namespace App\Http\Controllers;
 use App\Http\Resources\Task\TaskResource;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
     //
+
+    function status($project_id)
+    {
+        $tasks = Task::where('project_id', $project_id)
+            ->where('is_deleted','=', 0)
+            ->where('status','<>', 2)
+            ->get();
+        //если задач нет , тогда ставим готово, иначе - 1 (на исполнении)
+        if (count($tasks) === 0 ) {
+            Project::find($project_id)->update(['status' => 2]);
+        } else { Project::find($project_id)->update(['status' => 1]);}
+    }
+
     public function index()
     {
         $tasks = Task::query()
@@ -48,8 +62,18 @@ class TaskController extends Controller
         // Получаем id текущего пользователя
         $userId = auth()->user()->id;
 
-        // Создание
+        // Получаем id проекта
+        $projectId = $request->project_id;
+        // Получаем статус проекта
+        $projectStatus = Project::find($projectId)->status;
 
+        // Проверяем, что статус проекта не равен 1 (если это необходимо)
+        if ($projectStatus !== 1) {
+            // Обновляем статус проекта на 1
+            Project::find($projectId)->update(['status' => 1]);
+        }
+
+        // Создание
         Task::create([
             'title' => $validatedData['title'],
             'overview' => $request['overview'],
@@ -63,6 +87,18 @@ class TaskController extends Controller
     public function update(Task $task, Request $request)
     {
 
+        //обновение данных задачи
+        if (($request['par']) === 2)
+        {
+            $task->title = $request['title'];
+            $task->overview = $request['overview'];
+
+            //проверяем статус проекта, вдруг сменился id проекта, и нам нужно сменить в предыдущем
+            $projectId = $task->project_id;
+            $task->project_id = $request['project_id'];
+        }
+
+         //нажали старт задачи
         if (($request['par']) == 1)
         {
             $task->start = now();
@@ -70,6 +106,7 @@ class TaskController extends Controller
             $task->performer =  auth()->user()->id;
         }
 
+        //нажали закончить задачи
         if (($request['par']) == 0)
         {
             $task->stop = now();
@@ -79,12 +116,27 @@ class TaskController extends Controller
             //dd($task);
         }
 
+        //удаление задачи
         if ($request['par'] == 3)
         {
             $task->is_deleted = 1;
         }
 
         $task->save();
+
+        //// Проверяем, что у проекта нет задач со статусом <> 1 и is_deleted не равно 0
+        if (($request['par']) !== 2)
+        {
+            $projectId = $request->project_id;
+        }
+        else
+        {
+            $this->status($request->project_id);
+        }
+
+        $this->status($projectId);
+
+
         return redirect()->route('project.show' , $request['project_id']);
     }
 
@@ -115,7 +167,19 @@ class TaskController extends Controller
 
     public function edit (Task $task)
     {
-        return inertia('Task/Edit', compact('task'));
+
+        $projects = Project::query()
+            ->select('title', 'id')
+            ->where('is_deleted', 0)
+            ->get();
+
+        $users = User::query()
+            ->select('name', 'id')
+            ->get();
+
+        return inertia('Task/Edit', compact('task', 'projects', 'users'));
     }
+
+
 
 }

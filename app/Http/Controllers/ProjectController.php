@@ -33,7 +33,6 @@ class ProjectController extends Controller
             ->get();
 
         $projects = ProjectResource::collection($projects)->resolve();
-        //dd($projects);
         return inertia('Project/Index', compact('projects'));
     }
 
